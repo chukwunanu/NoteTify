@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Note;
 use App\Models\Team;
+use App\Models\Invite;
 use App\Models\TeamUser;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -14,15 +16,18 @@ class TeamController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+   public function index()
     {
-        // Fetch all teams and return the view
-        $teams = Team::all();
-        if ($teams->isEmpty()) {
+        $team = Auth::user()->teams;
+
+        if ($team->isEmpty()) {
             return redirect()->back()->with('fail', 'No teams found.');
         }
-        return view('teams.index-team', compact('teams'));
+
+        return view('teams.index-team', compact('team'));
     }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -80,7 +85,7 @@ class TeamController extends Controller
     {
         try {
             $team = Team::findOrFail($id);
-
+           
             $user = Auth::user();
 
             new Note();
@@ -131,6 +136,10 @@ class TeamController extends Controller
         ]);
 
         try {
+            if (!Auth::user()->teams->contains('id', $id)) {
+                return redirect()->route('teams.index')->with('fail', 'You do not have permission to update this team.');
+            }
+
             $team = Team::findOrFail($id);
             $team->update($validated);
 
@@ -148,6 +157,9 @@ class TeamController extends Controller
     public function destroy(string $id)
     {
         try {
+            if (!Auth::user()->teams->contains('id', $id)) {
+                return redirect()->route('teams.index')->with('fail', 'You do not have permission to delete this team.');
+            }
             $team = Team::findOrFail($id);
             $team->delete();
 

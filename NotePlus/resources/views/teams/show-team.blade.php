@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
      @vite('resources/css/app.css')
-    <title>Home Page</title>
+    <title>Show Team Details Page</title>
 </head>
 <body>
     <!--
@@ -24,7 +24,7 @@
       <div class="flex h-16 items-center justify-between">
         <div class="flex items-center">
           <div class="shrink-0">
-            <img class="size-8" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company" />
+            {{-- <img class="size-8" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company" /> --}}
           </div>
           <div class="hidden md:block">
             <div class="ml-10 flex items-baseline space-x-4">
@@ -32,7 +32,7 @@
               <a href="{{ route('user.index') }}" class="{{ request()->routeIs('user.index') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium">Home</a>
               <a href="{{ route('notes.index') }}" class="{{ request()->routeIs('notes.index') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium">Projects</a>
               <a href="{{ route('teams.index') }}" class="{{ request()->routeIs('teams.index') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium"> Teams</a>
-              <a href="#" class="{{ request()->is('calendar*') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium"> Calendar</a>
+              {{-- <a href="#" class="{{ request()->is('calendar*') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium"> Calendar</a> --}}
             </div>
           </div>
         </div>
@@ -130,8 +130,16 @@
   </nav>
 
   <header class="bg-white shadow-sm">
-    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-      <h1 class="text-3xl font-bold tracking-tight text-gray-900">NoteTify</h1>
+    <div class="mx-auto mt-8 max-w-7xl px-4 py-3 sm:px-6 lg:px-8 flex justify-between">
+        <h1 class="text-3xl font-bold tracking-tight text-gray-900">NoteTify</h1>
+        <form action="{{ route('invites.store', $team->id) }}" method="POST">
+          @csrf
+          <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+          <input type="hidden" name="team_id" value="{{ $team->id }}">
+            <input class="py-3 border-none rounded-md pr-3" type="email" name="email" placeholder="Enter email address"/>
+          <button type="submit" class="rounded-md font-bold text-2xl px-3 py-2 border bg-blue-600 text-white hover:bg-gray-200 hover:text-black">Invite</button>
+        </form>
+        
     </div>
  </header>
     <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -140,13 +148,13 @@
     <main>
         <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 mt-5">
               <!-- Your content -->
-              @if (session('success'))
-                <span class="alert alert-success bg-green-500 p-2">{{ session('success') }}</span>
+              @if (Session::has('success'))
+                <span class="text-white bg-green-500 p-2 mb-2">{{ Session::get('success') }}</span>
               @endif
-              @if (session('fail'))
-                <span class="alert alert-danger bg-red-500 p-2">{{ session('fail') }}</span>
+              @if (Session::has('fail'))
+                <span class="text-white bg-red-500 p-2 mb-2">{{ Session::get('fail') }}</span>
               @endif
-
+                
               <form action="{{ route('notes.store') }}" method="POST" class="bg-gray-100 shadow-sm ring-1 ring-gray-900/10 sm:rounded-lg p-4">
                 @csrf
                 <input type="hidden" name="team_id" value="{{ session('active_team_id') }}">
@@ -161,12 +169,12 @@
                             </div>
                           </div>
                     </div>
-                    <div class="mt-6 flex items-center justify-between gap-x-6">
-                        <button type="button" class="text-sm/6 font-bold text-gray-900 ">
-                          <a class="bg-green-700" href="">
+                    <div class="mt-6 flex items-center justify-end gap-x-6">
+                        {{-- <button type="button" class="rounded-md bg-green-700 px-1 py-2 text-sm font-semibold text-white shadow-xs hover:bg-green-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
+                          <a href="">
                             Join Team
                           </a>
-                        </button>
+                        </button> --}}
                         <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
                     </div>
                 </div>

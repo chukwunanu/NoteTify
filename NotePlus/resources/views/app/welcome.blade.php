@@ -28,12 +28,22 @@
     <div class="wrapper">
         <section class="login-content">
             <div class="container-fluid h-100">
-                @if (session('success'))
-                <span class="alert alert-success bg-green-500 p-2">{{ session('success') }}</span>
+                @if (Session::has('success'))
+                <span class="bg-green-400 text-white p-2">{{ Session::get('success') }}</span>
                 @endif
-                @if (session('fail'))
-                    <span class="alert alert-danger bg-red-500 p-2">{{ session('fail') }}</span>
+                @if (Session::has('fail'))
+                    <span class="text-white bg-red-400 p-2">{{ Session::get('fail') }}</span>
                 @endif
+
+                @if (request()->has('token'))
+                    <div class="bg-gray-400 mt-3">
+                        You have been invited to join a team. Please log in or register to continue.
+                    </div>
+                    @php
+                        session(['invite_token' => request()->token]);
+                    @endphp
+                @endif
+
                 <div class="row justify-content-center align-items-center height-self-center">
                     <div class="col-md-5 col-sm-12 col-12 align-self-center">
                         <div class="sign-user_card">

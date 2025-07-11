@@ -35,7 +35,7 @@ class UserController extends Controller
         $notes = Note::where('user_id', Auth::id())
             ->where('team_id', Auth::user()->teams->first()->id)
             ->get();
-        return view('app.index', compact('notes', 'teams'));
+        return view('app.index', compact('notes', 'team'));
     }
 
     /**

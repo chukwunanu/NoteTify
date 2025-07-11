@@ -24,7 +24,7 @@
       <div class="flex h-16 items-center justify-between">
         <div class="flex items-center">
           <div class="shrink-0">
-            <img class="size-8" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company" />
+            {{-- <img class="size-8" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company" /> --}}
           </div>
           <div class="hidden md:block">
             <div class="ml-10 flex items-baseline space-x-4">
@@ -32,7 +32,7 @@
               <a href="{{ route('user.index') }}" class="{{ request()->routeIs('user.index') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium">Home</a>
               <a href="{{ route('notes.index') }}" class="{{ request()->routeIs('notes.index') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium">Projects</a>
               <a href="{{ route('teams.index') }}" class="{{ request()->routeIs('teams.index') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium"> Teams</a>
-              <a href="#" class="{{ request()->is('calendar*') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium"> Calendar</a>
+              {{-- <a href="#" class="{{ request()->is('calendar*') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium"> Calendar</a> --}}
             </div>
           </div>
         </div>
@@ -139,11 +139,11 @@
     <main>
         <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 mt-5">
               <!-- Your content -->
-              @if (session('success'))
-                <span class="alert alert-success bg-green-500 p-2">{{ session('success') }}</span>
+              @if (Session::has('success'))
+                <span class="bg-green-400 text-white p-2 mb-2">{{ Session::get('success') }}</span>
               @endif
-              @if (session('fail'))
-                <span class="alert alert-danger bg-red-500 p-2">{{ session('fail') }}</span>
+              @if (Session::has('fail'))
+                <span class="text-white bg-red-400 p-2 mb-2">{{ Session::get('fail') }}</span>
               @endif
             {{-- <form action="{{ route('notes.store') }}" method="POST" class="bg-gray-100 shadow-sm ring-1 ring-gray-900/10 sm:rounded-lg p-4">
                 @csrf
@@ -182,7 +182,7 @@
                   <form class="inline" action="{{ route('notes.destroy', $note->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this note?');">
                     @csrf
                     @method('DELETE')
-                    <button class="px-3 py-1 border rounded text-sm bg-red-500 hover:bg-red-200 text-white">
+                    <button class="px-3 py-1 border rounded text-sm bg-red-500 hover:bg-red-900 text-white">
                       Delete
                     </button>
                   </form>

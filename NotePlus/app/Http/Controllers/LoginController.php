@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Validation\ValidationException;
+use App\Models\Invite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -29,6 +30,23 @@ class LoginController extends Controller
                 'password' => 'The provided credentials does not match our records.'
             ]);
         }
+
+        if (session()->has('invite_token')) {
+            $token = session('invite_token');
+            $invitation = Invite::where('token', $token)
+                ->where('email', $attributes['email'])
+                ->where('accepted', false)
+                ->first();
+            
+            if ($invitation) {
+                $user = Auth::user();
+                $user->teams->attach($invitation->team_id);
+                $invitation->update(['accepted' => true]);
+            }
+        
+            session()->forget('invite_token');
+        }
+        
         request()->session()->regenerate();
 
         return redirect()->route('user.index')->with('message', 'Login Successful!');

@@ -13,11 +13,21 @@ class NoteController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $notes = Note::all();
-        return view('notes.projects', compact('notes'));
+   public function index()
+{
+    $team = Auth::user()->teams->first();
+
+    // Check if the user is in a team
+    if (!$team) {
+        return redirect()->route('teams.create')->with('fail', 'Please join or create a team first.');
     }
+
+    $notes = Note::where('team_id', $team->id)
+                 ->where('user_id', Auth::id()) // Optional: limit to current user’s notes
+                 ->get();
+
+    return view('notes.projects', compact('notes', 'team'));
+}
 
     /**
      * Show all notes with same team_id as the authenticated user.
@@ -41,31 +51,33 @@ class NoteController extends Controller
      */
     public function store(Request $request)
     {
+        $team = new Team();
+        $teamId = $team->id;
+
         $validated = $request->validate([
             'content' => 'required|string|min:5',
-            'team_id' => 'required|exists:teams,id',
+            $teamId => 'required|exists:teams,id',
         ]);
 
         $user = Auth::user();
 
         if (!$user) {
-            return redirect()->back()->withErrors(['message' => 'User not authenticated.']);
+            return redirect()->back()->with(['fail' => 'User not authenticated.']);
         }
 
         // Check that user belongs to the team
         if (!$user->teams->contains('id', $validated['team_id'])) {
-            return redirect()->back()->withErrors(['message' => 'You are not a member of the selected team.']);
+            return redirect()->back()->with(['fail' => 'You are not a member of the selected team.']);
         }
-
         // Create the note
         $note = Note::create([
             'content' => $validated['content'],
             'user_id' => $user->id,
-            'team_id' => $validated['team_id'],
+            'team_id' => $validated[$teamId],
             'created_by' => $user->name,
         ]);
 
-        return redirect()->route('teams.show')->with('success', 'Note created successfully.');
+        return redirect()->route('teams.show', $team->id)->with('success', 'Note created successfully.');
     }
 
 
@@ -78,12 +90,12 @@ class NoteController extends Controller
             $note = Note::findOrFail($id);
 
             if (!$note->team->users->contains(Auth::id())) {
-                return redirect()->route('user.index')->with('error', 'Unauthorized access to this note.');
+                return redirect()->route('user.index')->with('fail', 'Unauthorized access to this note.');
             }
 
             return view('notes.show-note', compact('note'));
         } catch (\Exception $e) {
-            return redirect()->route('user.index')->with('error', 'Note not found.');
+            return redirect()->route('user.index')->with('fail', 'Note not found.');
         }
     }
 
@@ -93,10 +105,11 @@ class NoteController extends Controller
     public function edit(string $id)
     {
         try {
+
             $note = Note::findOrFail($id);
             return view('notes.note-edit', compact('note'));
         } catch (\Exception $e) {
-            return redirect()->route('notes.edit')->with('error', 'Note not found.');
+            return redirect()->route('notes.edit', $id)->with('fail', 'Note not found.');
         }
 
 
@@ -114,12 +127,17 @@ class NoteController extends Controller
 
         try {
             $note = Note::findOrFail($id);
+
+            if ($note->user_id !== Auth::id()) {
+                return redirect()->back()->withErrors(['fail' => 'You do not have permission to edit this note.']);
+            }
+
             $note->update([
                 'content' => $request->input('content'),
             ]);
-            return redirect()->route('teams.show')->with('success', 'Note updated successfully.');
+            return redirect()->route('teams.show', $note->team_id)->with('success', 'Note updated successfully.');
         } catch (\Exception $e) {
-            return redirect()->route('notes.edit')->with('error', 'Note not found.');
+            return redirect()->route('notes.edit', $id)->with('fail', 'Note not found.');
         }
     }
 
@@ -133,7 +151,7 @@ class NoteController extends Controller
             $note->delete();
             return redirect()->route('user.index')->with('success', 'Note deleted successfully.');
         } catch (\Exception $e) {
-            return redirect()->route('user.index')->with('error', 'Note not found.');
+            return redirect()->route('user.index')->with('fail', 'Note not found.');
         }
     }
 }

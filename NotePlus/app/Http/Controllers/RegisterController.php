@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Team;
 use App\Models\User;
+use App\Models\Invite;
+use App\Models\TeamUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use App\Http\Requests\StoreRegisterRequest;
-use App\Models\TeamUser;
 
 class RegisterController extends Controller
 {
@@ -33,38 +34,51 @@ class RegisterController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-   public function store(StoreRegisterRequest $request)
-{
-    $validatedData = $request->validated();
+    public function store(StoreRegisterRequest $request,)
+    {
+        $validatedData = $request->validated();
 
-    try {
-        $validatedData['password'] = Hash::make($validatedData['password']);
-        $validatedData['password_confirmation'] = Hash::make($validatedData['password_confirmation']);
+        try {
+            $validatedData['password'] = Hash::make($validatedData['password']);
+            $validatedData['password_confirmation'] = Hash::make($validatedData['password_confirmation']);
 
-        $users = User::create($validatedData);
-    
-        $team = Team::create([
-            'team_name' => $users->name,
-            'user_id' => $users->id,
-        ]);
+            $users = User::create($validatedData);
+            $token = session('invite_token');
 
-        $team_users = TeamUser::create([
-            'team_id' => $team->id,
-            'user_id' => $users->id,
-            'role' => 'owner',
-        ]);
+            if ($token) {
+                $invitation = Invite::where('token', $token)
+                    ->where('email', $validatedData['email'])
+                    ->where('accepted', false)
+                    ->first();
 
-        // $users->teams()->attach($team->id, $users->id, ['role' => 'owner']);
+                if ($invitation) {
+                    $users->teams()->attach($invitation->team_id);
+                    $invitation->update(['accepted' => true]);
+                    session()->forget('invite_token');
+                }
+            }
 
-        Log::info('User registered and team created', ['user_id' => $users->id]);
-        Auth::login($users);
-        return redirect()->route('user.index')->with('success', 'Registration Successful');
-    } catch (\Exception $e) {
-        Log::error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
-        return redirect('/signup')->with('fail', 'Sorry!! Registration Failed: ' . $e->getMessage());
+            $team = Team::create([
+                'team_name' => $users->name,
+                'user_id' => $users->id,
+            ]);
+
+            $team_users = TeamUser::create([
+                'team_id' => $team->id,
+                'user_id' => $users->id,
+                'role' => 'owner',
+            ]);
+
+            // $users->teams()->attach($team->id, $users->id, ['role' => 'owner']);
+
+            Log::info('User registered and team created', ['user_id' => $users->id]);
+            Auth::login($users);
+            return redirect()->route('user.index')->with('success', 'Registration Successful');
+        } catch (\Exception $e) {
+            Log::error($e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return redirect('/signup')->with('fail', 'Sorry!! Registration Failed: ' . $e->getMessage());
+        }
     }
-}
-
 
     /**
      * Display the specified resource.

@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('invites', function (Blueprint $table) {
             $table->id();
-            $table->string('member_name'); // Name of the invited member
-            $table->string('title'); // Title of the invite (e.g., Web Developer, etc.)
             $table->foreignId('team_id')->constrained('teams')->onDelete('cascade');
-            $table->string('code')->unique(); // Unique invite code
+            $table->string('email');
+            $table->string('token')->unique(); // Unique team invite code to potential members who wish to join
+            $table->boolean('accepted')->default(false);
             $table->timestamp('expires_at')->nullable();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();

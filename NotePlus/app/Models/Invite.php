@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
 
 class Invite extends Model
 {
     protected $fillable = [
-        'member_name', // Name of the invited member
-        'title', // Web Developer, etc.
-        'role', //
         'team_id',
-        'code', // Unique
+        'email', // Unique
+        'token',
+        'accepted',
         'expires_at', // DateTime
         'user_id', //nullable fk
     ];
@@ -24,5 +24,10 @@ class Invite extends Model
     public function invitedBy()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public static function generateCode()
+    {
+        return Str::random(5); 
     }
 }

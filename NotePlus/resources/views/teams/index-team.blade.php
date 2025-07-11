@@ -32,7 +32,7 @@
               <a href="{{ route('user.index') }}" class="{{ request()->routeIs('user.index') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium">Home</a>
               <a href="{{ route('notes.index') }}" class="{{ request()->routeIs('notes.index') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium">Projects</a>
               <a href="{{ route('teams.index') }}" class="{{ request()->routeIs('teams.index') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium"> Teams</a>
-              <a href="#" class="{{ request()->is('calendar*') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium"> Calendar</a>
+              {{-- <a href="#" class="{{ request()->is('calendar*') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-md px-3 py-2 text-sm font-medium"> Calendar</a> --}}
             </div>
           </div>
         </div>
@@ -133,10 +133,10 @@
     <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 flex justify-between">
       <div>
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">NoteTify</h1>
-        <h6 class="mb-0 line-height font-bold mt-5">Welcome To {{ $team->team_name ?? 'No Team' }} Team</h6>
+        {{-- <h6 class="mb-0 line-height font-bold mt-5">Welcome To {{ $teams->team_name ?? 'No Team' }} Team</h6> --}}
       </div>
       <div class="mt-8">
-        <button class="px-3 py-3 border rounded text-sm bg-blue-600 text-white hover:bg-gray-200 hover:text-black"><a href="{{ route('teams.create') }}">Create A Team</a></button>
+        <button class="flex rounded-md px-3 py-3 border text-sm bg-blue-600 text-white hover:bg-gray-200 hover:text-black"><a class="px-1 flex rounded-md" href="{{ route('teams.create') }}">Create A Team</a></button>
       </div>
     </div>
  </header>
@@ -148,21 +148,21 @@
     <main>
         <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
               <!-- Your content -->
-              @if (session('success'))
-                <span class="alert alert-success bg-green-500 p-2">{{ session('success') }}</span>
+              @if (Session::has('success'))
+                <span class="bg-green-400 text-white p-2 mb-2">{{ Session::get('success') }}</span>
               @endif
-              @if (session('fail'))
-                <span class="alert alert-danger bg-red-500 p-2">{{ session('fail') }}</span>
+              @if (Session::has('fail'))
+                <span class="text-white bg-red-500 p-2 mb-2">{{ Session::get('fail') }}</span>
               @endif
             
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-3">
                 {{-- Your Content --}}
-        @foreach ($teams as $team)
+        @foreach ($team as $team)
         <div class="bg-gray-300 rounded-xl shadow hover:bg-gray-100 transition duration-300">
           
             <div class="p-4 ">
-              <p class="text-black mb-4 font-bold " >
+              <p class="text-black mb-4 font-bold">
                 {{ $team->team_name }} Team
               </p>
               <h3 class="mb-2">{{ $team->created_by }}</h3>

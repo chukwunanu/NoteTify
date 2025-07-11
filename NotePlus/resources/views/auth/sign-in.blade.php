@@ -36,14 +36,24 @@
         -->
         
         <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-              @if (session('success'))
-              <span class="alert alert-success bg-green-500 p-2">{{ session('success') }}</span>
+              @if (Session::has('success'))
+              <span class="bg-green-400 text-white p-2">{{ Session::get('success') }}</span>
               @endif
               @if (Session::has('fail'))
-                   <span class="alert alert-danger bg-red-500 p-2">{{ Session::get('fail') }}</span>
+                   <span class="text-white bg-red-400 p-2">{{ Session::get('fail') }}</span>
               @endif
+
+              @if(request()->has('token'))
+                  <div class="bg-gray-400 mt-2">
+                      You have been invited to join a team. Log in to accept the invitation.
+                  </div>
+                  @php
+                      session(['invite_token' => request()->token]);
+                  @endphp
+              @endif
+              
           <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-            <img class="mx-auto h-10 w-auto" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" />
+            {{-- <img class="mx-auto h-10 w-auto" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" /> --}}
             <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Signin to your account</h2>
           </div>
       
@@ -70,7 +80,9 @@
                    <p class="text-xs text-red-500 font-semibold mt-2">{{ $message }}</p>
                 @enderror
             </div>
-          
+              @if(session()->has('invite_token'))
+                  <input type="hidden" name="invite_token" value="{{ session('invite_token') }}">
+              @endif
               <div>
                 <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign in</button>
               </div>

@@ -1,11 +1,14 @@
 <?php
 
+use App\Mail\InviteMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\NoteController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\TeamController;
+use App\Http\Controllers\InvitationController;
 
 // Route::get('/', function () {
 //     return view('app.index');
@@ -46,3 +49,14 @@ Route::controller(TeamController::class)->middleware(['auth'])->group(function()
     Route::put('/teams/{id}', 'update')->name('teams.update');
     Route::delete('/teams/{id}', 'destroy')->name('teams.destroy');
 });
+
+Route::controller(InvitationController::class)->group(function() {
+    Route::post('/teams/{team}/invite',  'sendInvite')->name('invites.store');
+    Route::get('/invite/accept/{token}/{team}', 'acceptInvite')->name('invites.accept');
+});
+
+// Route::get('/test-invite', function () {
+//     $link = url('/invite/accept/testtoken');
+//     Mail::to('uughasoro@gmail.com')->send(new InviteMail($link, $team = null));
+//     return 'Invite test sent';
+// });
