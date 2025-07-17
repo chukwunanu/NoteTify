@@ -29,55 +29,44 @@ class NoteController extends Controller
     return view('notes.projects', compact('notes', 'team'));
 }
 
-    /**
-     * Show all notes with same team_id as the authenticated user.
-     * This method assumes that each user belongs to one team.
-     * If a user can belong to multiple teams, this logic would need to be adjusted.
-     */
-   /**
-    * Show all notes where the team_id matches the currently active team
-    * of the authenticated user. Assumes "active" team is the first one.
-    */
-
     public function create()
     {
         //
     }
 
-
-
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+   public function store(Request $request)
     {
-        $team = new Team();
-        $teamId = $team->id;
-
         $validated = $request->validate([
             'content' => 'required|string|min:5',
-            $teamId => 'required|exists:teams,id',
+            'team_id' => 'required|exists:teams,id',
         ]);
-
+    
         $user = Auth::user();
-
+    
         if (!$user) {
             return redirect()->back()->with(['fail' => 'User not authenticated.']);
         }
-
-        // Check that user belongs to the team
+    
         if (!$user->teams->contains('id', $validated['team_id'])) {
-            return redirect()->back()->with(['fail' => 'You are not a member of the selected team.']);
+            return redirect()->back()->with(['fail' => 'You are not a member of this team.']);
         }
-        // Create the note
+
+        if (trim($validated['content']) === '') {
+            return redirect()->back()->with('fail', 'This note cannot be empty. Minimum of five characters required');
+        }
+
+    
         $note = Note::create([
             'content' => $validated['content'],
             'user_id' => $user->id,
-            'team_id' => $validated[$teamId],
+            'team_id' => $validated['team_id'],
             'created_by' => $user->name,
         ]);
-
-        return redirect()->route('teams.show', $team->id)->with('success', 'Note created successfully.');
+    
+        return redirect()->route('teams.show', $validated['team_id'])->with('success', 'Note created successfully.');
     }
 
 

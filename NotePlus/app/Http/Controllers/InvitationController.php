@@ -34,7 +34,12 @@ class InvitationController extends Controller
             'user_id' => $request->user_id,
         ]);
 
-        $inviteLink = url("/invite/accept/{$token}/$team->id");
+        $APP_URL =  " http://127.0.0.1:8000";
+
+        $inviteLink = url("{$APP_URL}/invite/accept/{$token}/{$team->id}");
+
+        // $inviteLink = route('invites.accept', ['token' => $token, 'team' => $team->id]);
+
 
         Mail::to($request->email)->send(new InviteMail($inviteLink, $team));
 

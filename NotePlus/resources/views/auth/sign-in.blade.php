@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-     @vite('resources/css/app.css')
-    <title>Register</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <title>Login Page</title>
 </head>
 <body>
     <!--
@@ -37,10 +37,14 @@
         
         <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
               @if (Session::has('success'))
-              <span class="bg-green-400 text-white p-2">{{ Session::get('success') }}</span>
+                <div class="mb-2 p-2 bg-green-500 max-w-7xl">
+                  <span class="text-white">{{ Session::get('success') }}</span>
+                </div>
               @endif
               @if (Session::has('fail'))
-                   <span class="text-white bg-red-400 p-2">{{ Session::get('fail') }}</span>
+                <div class="mb-2 p-2 max-w-7xl bg-red-500">
+                  <span class="text-white p-2 mb-2 ">{{ Session::get('fail') }}</span>
+                </div>
               @endif
 
               @if(request()->has('token'))
@@ -54,7 +58,7 @@
               
           <div class="sm:mx-auto sm:w-full sm:max-w-sm">
             {{-- <img class="mx-auto h-10 w-auto" src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" alt="Your Company" /> --}}
-            <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Signin to your account</h2>
+            <h2 class="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">Sign in to your account</h2>
           </div>
       
           <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">

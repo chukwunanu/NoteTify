@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-     @vite('resources/css/app.css')
+    <link rel="stylesheet" href="{{ asset('public/build/assets/app-CQW-ZJaW.css ') }}">
+    <script src="{{ asset('public/build/assets/app-DNxiirP_.js') }}" type="module"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script> --}}
+     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <title>Show Note Page</title>
 </head>
 <body>
@@ -52,8 +54,14 @@
                 <button type="button" class="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-hidden focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-800" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                   <span class="absolute -inset-1.5"></span>
                   <span class="sr-only">Open user menu</span>
-                  <img class="size-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" />
+                  {{-- <img class="size-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="" /> --}}
                 </button>
+                 @auth
+              <form action="{{route('logout')}}" method="POST">
+                @csrf
+                <button type="submit" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white"">Logout</button>
+              </form>
+                @endAuth
               </div>
 
               <!--
@@ -129,12 +137,16 @@
       <h6 class="mb-0 line-height font-bold mt-5">Welcome To {{ $team->team_name ?? 'No Team' }} Team</h6>
     </div>
  </header>
-   @if (Session::has('success'))
-        <span class="bg-green-400 text-white p-2">{{ Session::get('success') }}</span>
+  @if (Session::has('success'))
+    <div class="mb-2 p-2 bg-green-500 max-w-7xl">
+        <span class="text-white">{{ Session::get('success') }}</span>
+    </div>
     @endif
     @if (Session::has('fail'))
-        <span class="text-white bg-red-400 p-2">{{ Session::get('fail') }}</span>
-    @endif
+      <div class="mb-2 p-2 max-w-7xl bg-red-500">
+        <span class="text-white p-2 mb-2 ">{{ Session::get('fail') }}</span>
+    </div>
+  @endif
     <main>
         <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 mt-6">
               <!-- Your content -->

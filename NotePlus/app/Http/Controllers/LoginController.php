@@ -56,6 +56,6 @@ class LoginController extends Controller
     {
         Auth::logout();
         request()->session()->invalidate();
-        return redirect()->route('login.index')->with('success', 'Logged out successfully!');
+        return redirect()->route('login')->with('success', 'Logged out successfully!');
     }
 }

@@ -27,7 +27,7 @@ class InviteMail extends Mailable
 
     public function build()
     {
-        return $this->subject('You’ve Been Invited to Join a Team on NoteTify!')
+        return $this->subject('You have Been Invited to Join a Team on NoteTify!')
                     ->view('emails.invite')
                     ->with([
                         'inviteLink' => $this->inviteLink,

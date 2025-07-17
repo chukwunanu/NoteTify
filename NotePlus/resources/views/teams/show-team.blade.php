@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
-     @vite('resources/css/app.css')
+    {{-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script> --}}
+     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <title>Show Team Details Page</title>
 </head>
 <body>
@@ -149,10 +149,14 @@
         <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 mt-5">
               <!-- Your content -->
               @if (Session::has('success'))
-                <span class="text-white bg-green-500 p-2 mb-2">{{ Session::get('success') }}</span>
+                <div class="mb-2 p-2 bg-green-500 max-w-7xl">
+                  <span class="text-white  ">{{ Session::get('success') }}</span>
+                </div>
               @endif
               @if (Session::has('fail'))
-                <span class="text-white bg-red-500 p-2 mb-2">{{ Session::get('fail') }}</span>
+                <div class="mb-2 p-2 max-w-7xl bg-red-500">
+                  <span class="text-white p-2 mb-2 ">{{ Session::get('fail') }}</span>
+                </div>
               @endif
                 
               <form action="{{ route('notes.store') }}" method="POST" class="bg-gray-100 shadow-sm ring-1 ring-gray-900/10 sm:rounded-lg p-4">

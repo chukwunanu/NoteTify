@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-     @vite('resources/css/app.css')
-    <title>Register</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <title>Register Page</title>
 </head>
 <body>
     <!--
@@ -34,11 +34,15 @@
           <body class="h-full">
           ```
         -->
-         @if (Session::has('success'))
-           <span class="bg-green-400 text-white p-2 mb-2">{{ Session::get('success') }}</span>
+        @if (Session::has('success'))
+          <div class="mb-2 p-2 bg-green-500 max-w-7xl">
+            <span class="text-white">{{ Session::get('success') }}</span>
+          </div>
         @endif
         @if (Session::has('fail'))
-             <span class="text-white bg-red-400 p-2 mb-2">{{ Session::get('fail') }}</span>
+          <div class="mb-2 p-2 max-w-7xl bg-red-500">
+            <span class="text-white p-2 mb-2 ">{{ Session::get('fail') }}</span>
+          </div>
         @endif
         <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
           <div class="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -101,7 +105,7 @@
         
             <p class="mt-10 text-center text-sm/6 text-gray-500">
               Already have an account?
-              <a href="{{ route('login.index') }}" class="font-semibold text-indigo-600 hover:text-indigo-500">Sign in</a>
+              <a href="{{ route('login') }}" class="font-semibold text-indigo-600 hover:text-indigo-500">Sign in</a>
             </p>
           </div>
         </div>

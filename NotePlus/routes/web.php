@@ -25,7 +25,7 @@ Route::controller(RegisterController::class)->group(function() {
 });
 
 Route::controller(LoginController::class)->group(function() {
-    Route::get('/signin', 'index')->name('login.index');
+    Route::get('/signin', 'index')->name('login');
     Route::post('/signin', 'login')->name('login.store');
     Route::post('/logout', 'logout')->middleware(['auth'])->name('logout');
 });
