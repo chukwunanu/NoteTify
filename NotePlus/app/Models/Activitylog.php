@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Activitylog extends Model
 {
+    protected $table = 'activity_logs';
+
     protected $fillable = [
         'user_id',
         'action_type', // (string: describes the type of user activity)Example values:'note_created''note_edited''note_deleted''joined_team''left_team''invited_member''transferred_ownership'
@@ -28,4 +30,16 @@ class Activitylog extends Model
     {
         return $this->belongsTo(Team::class);
     }
+
+     public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($log) {
+            if (! $log->team_id || ! $log->note_id) {
+                throw new \Exception('Both team id and note id are required.');
+            }
+        });
+    }
+
 }

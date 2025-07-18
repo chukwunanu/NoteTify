@@ -144,19 +144,27 @@
  </header>
     <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <p class="font-bold text-2xl">{{ $team->team_name ?? 'No Team' }} Team</p>
+        <div class="mt-3 flex items-center gap-x-6">
+          <button type="button" class="rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-green-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-800">
+            <a href="{{ route('teams.activity_logs', $team->id) }}">Activity Logs</a>
+          </button>
+        </div>
     </div>
     <main>
-        <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 mt-5">
+        <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 mt-3">
               <!-- Your content -->
               @if (Session::has('success'))
-                <div class="mb-2 p-2 bg-green-500 max-w-7xl">
-                  <span class="text-white  ">{{ Session::get('success') }}</span>
-                </div>
+                  <div class="mb-2 p-2 bg-green-300 max-w-7xl flex justify-between items-center" id="successMsg">
+                      <span class="text-white">{{ Session::get('success') }}</span>
+                      <button onclick="document.getElementById('successMsg').style.display='none'" class="text-white font-bold ml-4">×</button>
+                  </div>
               @endif
+                
               @if (Session::has('fail'))
-                <div class="mb-2 p-2 max-w-7xl bg-red-500">
-                  <span class="text-white p-2 mb-2 ">{{ Session::get('fail') }}</span>
-                </div>
+                  <div class="mb-2 p-2 bg-red-300 max-w-7xl flex justify-between items-center" id="failMsg">
+                      <span class="text-white">{{ Session::get('fail') }}</span>
+                      <button onclick="document.getElementById('failMsg').style.display='none'" class="text-white font-bold ml-4">×</button>
+                  </div>
               @endif
                 
               <form action="{{ route('notes.store') }}" method="POST" class="bg-gray-100 shadow-sm ring-1 ring-gray-900/10 sm:rounded-lg p-4">
@@ -169,16 +177,12 @@
                         <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
                         
                           <div class="col-span-full mt-2">
+                              <input type="text" id="title" name="title" placeholder="Title of your note" class="block w-full rounded-md bg-white mb-1 px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 placeholder:font-bold focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" required>
                               <textarea name="content" id="content" rows="3" placeholder="Write your notes here..." class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
                             </div>
                           </div>
                     </div>
                     <div class="mt-6 flex items-center justify-end gap-x-6">
-                        {{-- <button type="button" class="rounded-md bg-green-700 px-1 py-2 text-sm font-semibold text-white shadow-xs hover:bg-green-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
-                          <a href="">
-                            Join Team
-                          </a>
-                        </button> --}}
                         <button type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
                     </div>
                 </div>
@@ -188,11 +192,11 @@
         @foreach ($notes as $note)
        
           <!-- Card -->
-          <div class="bg-gray-300 rounded-xl shadow hover:bg-gray-100 transition duration-300">
+          <div class="bg-gray-300 mb-3 rounded-xl shadow hover:bg-gray-100 transition duration-300">
           
             <div class="p-4 ">
-              <p class="text-black mb-4 " {{ Str::limit($note->content, 10, '...') }} >
-                {{ $note->content }}
+              <p class="text-black mb-4 font-bold">
+                {{ $note->title }}
               </p>
               <h3 class="mb-2">{{ $note->created_by }}</h3>
               <div class="flex justify-between items-center text-sm text-gray-500">
@@ -214,7 +218,44 @@
 
         @endforeach
       </div>
-        
+      
+    <h2 class="text-2xl font-bold mt-3 mb-6">Members of this Team</h2>
+
+    <table class="min-w-full bg-white border border-gray-300 rounded shadow">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="py-3 px-4 text-left">Name</th>
+                <th class="py-3 px-4 text-left">Email</th>
+                <th class="py-3 px-4 text-left">Role</th>
+                <th class="py-3 px-4 text-left">Joined</th>
+                <th class="py-3 px-4 text-left">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($team->users as $user)
+                <tr class="border-t hover:bg-gray-50">
+                    <td class="py-2 px-4">{{ $user->name }}</td>
+                    <td class="py-2 px-4">{{ $user->email }}</td>
+                    <td class="py-2 px-4">{{ ucfirst($user->pivot->role) }}</td>
+                    <td class="py-2 px-4">{{ $user->pivot->created_at ? $user->pivot->created_at->format('M d, Y') : '—' }}</td>
+                    <td class="py-2 px-4">
+                      <form action="{{ route('team-member.remove', [$team->id, $user->id]) }}" method="POST" onsubmit="return confirm('Are you sure you want to remove this member?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-red-600 hover:underline">
+                          Remove
+                        </button>
+                      </form>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="5" class="py-4 px-4 text-center text-gray-500">No members found in this team.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+
         </div>
 
     </div>

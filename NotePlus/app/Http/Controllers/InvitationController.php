@@ -71,4 +71,31 @@ class InvitationController extends Controller
         return redirect()->route('welcome', ['id' => $invitation->team_id])
                          ->with('success', 'Invitation accepted successfully!');
     }
+
+    public function showMembers($teamId)
+    {
+        $team = Team::with(['users' => function ($query) {
+            $query->withPivot('role');
+        }])->findorFail($teamId);
+
+        return view('teams.show-team', compact('team'));
+    }
+
+    public function removeMember($teamId, $userId)
+    {
+        $team = Team::findOrFail($teamId);
+
+        if (! $team->users()->where('user_id', $userId)->exists()) {
+            return redirect()->back()->with('fail', 'You are not a member of this team.');
+        }
+
+        if ($team->users()->where('user_id', $userId)->first()->pivot->role === 'owner') {
+            return redirect()->back()->with('fail', 'Owner cannot be removed.');
+        }
+
+        $team->users()->detach($userId);
+
+        return redirect()->back()->with('success', 'This Member has beensuccessfully removed from this team.');
+    }
+
 }

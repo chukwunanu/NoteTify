@@ -9,7 +9,7 @@
     {{-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script> --}}
      @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <title>Create Team Page</title>
+    <title>Activity Logs Page</title>
 </head>
 <body>
     <!--
@@ -134,7 +134,7 @@
   <header class="bg-white shadow-sm">
     <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       <h1 class="text-3xl font-bold tracking-tight text-gray-900">NoteTify</h1>
-      {{-- <h6 class="mb-0 line-height font-bold mt-5">Welcome To {{ $team->team_name ?? 'No Team' }} Team</h6> --}}
+      <h6 class="mb-0 line-height font-bold mt-5">Welcome To {{ $team->team_name ?? 'No Team' }} Team</h6>
     </div>
  </header>
    
@@ -154,31 +154,22 @@
                       <button onclick="document.getElementById('failMsg').style.display='none'" class="text-white font-bold ml-4">×</button>
                   </div>
               @endif
-        <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form class="space-y-6" action="{{ route('teams.store') }}" method="POST">
-                    @csrf
-                  <div>
-                    <label for="team_name" class="block text-sm/6 font-medium text-gray-900">Team Name</label>
-                    <div class="mt-2">
-                      <input type="text" name="team_name" id="team_name" autocomplete="team_name" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
-                    </div>
-                    @error('team_name')
-                       <p class="text-xs text-red-500 font-semibold mt-2">{{ $message }}</p>
-                    @enderror
-                  </div>
-            
-                  <div>
-                    <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
-                  </div>
-                </form>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
+        @foreach ($activityLogs as $log)
+            <tr>
+                <td>{{ $log->user->name }}</td>
+                <td>{{ ucfirst(str_replace('_', ' ', $log->action_type)) }}</td>
+                <td>{{ $log->description }}</td>
+                <td>{{ $log->created_at->diffForHumans() }}</td>
+            </tr>
+        @endforeach
+      </div>
         
-            <p class="mt-5 text-center text-sm/6 text-gray-500">
-              have a team already?
-              <a href="{{ route('teams.index') }}" class="font-semibold text-indigo-600 hover:text-indigo-500">View teams</a>
-            </p>
-          </div>
         </div>
-        </div>
+
+    </div>
+
 
     </main>
 </div>

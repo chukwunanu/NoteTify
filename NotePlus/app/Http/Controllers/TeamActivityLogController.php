@@ -2,20 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Note;
 use App\Models\Team;
-use App\Models\User;
+use App\Models\Activitylog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class UserController extends Controller
+class TeamActivityLogController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index($teamId)
     {
-        return view('app.welcome');
+        $team = Team::findOrFail($teamId);
+    
+        if (! $team->users->contains(Auth::id())) {
+            return redirect()->back()->with('fail', 'You are not an authorized member of this team');
+        }
+    
+        $activityLogs = Activitylog::where('team_id', $team->id)
+            ->with(['user', 'note']) // eager load related models
+            ->latest()
+            ->get();
+    
+        return view('teams.activity-logs', compact('team', 'activityLogs'));
     }
 
     /**
@@ -23,19 +33,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $team = Auth::user()->teams->first();
-        $teams = $team ? $team->team_name : null;
-
-        // if (!$team) {
-        //     return redirect()->route('teams.create')->with('error', 'Please join or create a team first.');
-        // }
-
-        // $users = $team ? $team->users : collect();
-
-        $notes = Note::where('user_id', Auth::id())
-            ->where('team_id', Auth::user()->teams->first()->id)
-            ->get();
-        return view('app.index', compact('notes', 'team'));
+        //
     }
 
     /**
@@ -75,12 +73,6 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        try {
-            $user = User::findOrFail($id);
-            $user->delete();
-            return redirect()->route('welcome')->with('success', 'User deleted successfully.');
-        } catch (\Exception $e) {
-            return redirect()->route('user.index')->with('fail', 'User not found.');
-        }
+        //
     }
 }

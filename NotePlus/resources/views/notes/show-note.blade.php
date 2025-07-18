@@ -138,14 +138,17 @@
     </div>
  </header>
   @if (Session::has('success'))
-    <div class="mb-2 p-2 bg-green-500 max-w-7xl">
-        <span class="text-white">{{ Session::get('success') }}</span>
-    </div>
-    @endif
-    @if (Session::has('fail'))
-      <div class="mb-2 p-2 max-w-7xl bg-red-500">
-        <span class="text-white p-2 mb-2 ">{{ Session::get('fail') }}</span>
-    </div>
+      <div class="mb-2 p-2 bg-green-300 max-w-7xl flex justify-between items-center" id="successMsg">
+          <span class="text-white">{{ Session::get('success') }}</span>
+          <button onclick="document.getElementById('successMsg').style.display='none'" class="text-white font-bold ml-4">×</button>
+      </div>
+  @endif
+    
+  @if (Session::has('fail'))
+      <div class="mb-2 p-2 bg-red-300 max-w-7xl flex justify-between items-center" id="failMsg">
+          <span class="text-white">{{ Session::get('fail') }}</span>
+          <button onclick="document.getElementById('failMsg').style.display='none'" class="text-white font-bold ml-4">×</button>
+      </div>
   @endif
     <main>
         <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 mt-6">
@@ -153,13 +156,16 @@
             <div class="bg-gray-200 rounded-xl shadow hover:bg-gray-100 transition duration-300">
     
         <div class="p-4 ">
+          <p class="text-black mb-2 font-bold" >
+            {{ $note->title }}
+          </p>
           <p class="text-black mb-4 ">
             {{ $note->content }}
           </p>
           <h3 class="mb-2">{{ $note->created_by }}</h3>
           <div class="flex justify-between items-center text-sm text-gray-500">
             <div class="space-x-2">
-              <button class="px-3 py-1 border rounded text-sm hover:bg-gray-900 hover:text-white"><a href="{{ route('user.index') }}">Back</a></button>
+              <button class="px-3 py-1 border rounded text-sm hover:bg-gray-900 hover:text-white"><a href="{{ route('teams.show', $note->id) }}">Back</a></button>
               <button class="px-3 py-1 border rounded text-sm hover:bg-gray-900 hover:text-white"><a href="{{route('notes.edit', $note->id)}}">Edit</a></button>
             </div>
             <span>{{ $note->created_at }}</span>

@@ -40,6 +40,7 @@ class NoteController extends Controller
    public function store(Request $request)
     {
         $validated = $request->validate([
+            'title' => 'required|string|min:3',
             'content' => 'required|string|min:5',
             'team_id' => 'required|exists:teams,id',
         ]);
@@ -60,6 +61,7 @@ class NoteController extends Controller
 
     
         $note = Note::create([
+            'title' => $validated['title'],
             'content' => $validated['content'],
             'user_id' => $user->id,
             'team_id' => $validated['team_id'],

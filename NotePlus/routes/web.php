@@ -9,6 +9,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\TeamActivityLogController;
 
 // Route::get('/', function () {
 //     return view('app.index');
@@ -53,6 +54,11 @@ Route::controller(TeamController::class)->middleware(['auth'])->group(function()
 Route::controller(InvitationController::class)->group(function() {
     Route::post('/teams/{team}/invite',  'sendInvite')->name('invites.store');
     Route::get('/invite/accept/{token}/{team}', 'acceptInvite')->name('invites.accept');
+    Route::delete('/member/{id}', 'removeMember')->name('team-member.remove');
+});
+
+Route::controller(TeamActivityLogController::class)->middleware(['auth'])->group(function() {
+    Route::get('/teams/{team}/activity-logs', 'index')->name('teams.activity_logs');
 });
 
 // Route::get('/test-invite', function () {

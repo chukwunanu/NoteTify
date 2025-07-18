@@ -9,7 +9,7 @@
     {{-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script> --}}
      @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <title>Create Team Page</title>
+    <title>Team Activity Logs Page</title>
 </head>
 <body>
     <!--
@@ -134,12 +134,15 @@
   <header class="bg-white shadow-sm">
     <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       <h1 class="text-3xl font-bold tracking-tight text-gray-900">NoteTify</h1>
-      {{-- <h6 class="mb-0 line-height font-bold mt-5">Welcome To {{ $team->team_name ?? 'No Team' }} Team</h6> --}}
     </div>
  </header>
+
+        <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+              <p class="font-bold text-2xl">{{ $team->team_name ?? 'No Team' }} Team Activity Log</p>
+        </div>
    
     <main>
-        <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 mt-5">
+        <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
               <!-- Your content -->
               @if (Session::has('success'))
                   <div class="mb-2 p-2 bg-green-300 max-w-7xl flex justify-between items-center" id="successMsg">
@@ -154,31 +157,47 @@
                       <button onclick="document.getElementById('failMsg').style.display='none'" class="text-white font-bold ml-4">×</button>
                   </div>
               @endif
-        <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form class="space-y-6" action="{{ route('teams.store') }}" method="POST">
-                    @csrf
-                  <div>
-                    <label for="team_name" class="block text-sm/6 font-medium text-gray-900">Team Name</label>
-                    <div class="mt-2">
-                      <input type="text" name="team_name" id="team_name" autocomplete="team_name" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
-                    </div>
-                    @error('team_name')
-                       <p class="text-xs text-red-500 font-semibold mt-2">{{ $message }}</p>
-                    @enderror
-                  </div>
-            
-                  <div>
-                    <button type="submit" class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Save</button>
-                  </div>
-                </form>
-        
-            <p class="mt-5 text-center text-sm/6 text-gray-500">
-              have a team already?
-              <a href="{{ route('teams.index') }}" class="font-semibold text-indigo-600 hover:text-indigo-500">View teams</a>
-            </p>
-          </div>
+
+    <table class="min-w-full bg-white border border-gray-200 rounded shadow">
+        <thead class="bg-gray-100">
+            <tr>
+                <th class="py-2 px-4">User</th>
+                <th class="py-2 px-4">Action</th>
+                <th class="py-2 px-4">Note Title</th>
+                {{-- <th class="py-2 px-4">Note Content</th> --}}
+                <th class="py-2 px-4">Description</th>
+                <th class="py-2 px-4">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($activityLogs as $log)
+                <tr class="border-t">
+                    <td class="py-2 px-4">{{ $log->user->name }}</td>
+                    <td class="py-2 px-4">{{ ucfirst(str_replace('_', ' ', $log->action_type)) }}</td>
+                    <td class="py-2 px-4">{{ $log->note->title ?? '—' }}</td>
+                    {{-- <td class="py-2 px-4">{{ $log->note->content ?? '—' }}</td> --}}
+                    <td class="py-2 px-4">{{ $log->description }}</td>
+                    <td class="py-2 px-4">{{ $log->created_at->format('M d, Y H:i') }}</td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="5" class="py-4 px-4 text-center text-gray-500">No activity logs found for this team.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+    
+        <div class="mt-2 items-center flex justify-end">
+            <button type="button" class="rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-gray-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600">
+                <a class="block" href="{{ route('teams.show', $team->id) }}">
+                    Back
+                </a>
+            </button>
         </div>
         </div>
+
+    </div>
+
 
     </main>
 </div>

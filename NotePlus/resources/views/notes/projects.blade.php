@@ -145,15 +145,18 @@
     <main>
         <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8 mt-5">
               <!-- Your content -->
-             @if (Session::has('success'))
-                <div class="mb-2 p-2 bg-green-500 max-w-7xl">
-                  <span class="text-white">{{ Session::get('success') }}</span>
-                </div>
+              @if (Session::has('success'))
+                  <div class="mb-2 p-2 bg-green-300 max-w-7xl flex justify-between items-center" id="successMsg">
+                      <span class="text-white">{{ Session::get('success') }}</span>
+                      <button onclick="document.getElementById('successMsg').style.display='none'" class="text-white font-bold ml-4">×</button>
+                  </div>
               @endif
+                
               @if (Session::has('fail'))
-                <div class="mb-2 p-2 max-w-7xl bg-red-500">
-                  <span class="text-white p-2 mb-2 ">{{ Session::get('fail') }}</span>
-                </div>
+                  <div class="mb-2 p-2 bg-red-300 max-w-7xl flex justify-between items-center" id="failMsg">
+                      <span class="text-white">{{ Session::get('fail') }}</span>
+                      <button onclick="document.getElementById('failMsg').style.display='none'" class="text-white font-bold ml-4">×</button>
+                  </div>
               @endif
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
@@ -163,8 +166,8 @@
           <div class="bg-gray-300 rounded-xl shadow hover:bg-gray-100 transition duration-300">
           
             <div class="p-4 ">
-              <p class="text-black mb-4 " >
-                {{ $note->content }}
+              <p class="text-black mb-4 font-bold" >
+                {{ $note->title }}
               </p>
               <h3 class="mb-2">{{ $note->created_by }}</h3>
               <div class="flex justify-between items-center text-sm text-gray-500">

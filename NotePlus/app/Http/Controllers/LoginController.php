@@ -49,7 +49,7 @@ class LoginController extends Controller
         
         request()->session()->regenerate();
 
-        return redirect()->route('user.index')->with('message', 'Login Successful!');
+        return redirect()->route('user.index')->with('success', 'Login Successful!');
     }
 
     public function logout()
