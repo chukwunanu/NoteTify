@@ -24,6 +24,7 @@ class StoreRegisterRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
+            'profession' => 'required',
             'email' => 'required|string|email|unique:users,email',
             'password' => [
                 'required',
@@ -44,6 +45,7 @@ class StoreRegisterRequest extends FormRequest
     {
         return [
             'name.required' => 'The name field is required.',
+            'profession.required' => 'Please enter your profession',
             'email.required' => 'The email field is required.',
             'email.email' => 'The email must be a valid email address.',
             'email.unique' => 'This email has already been taken.',

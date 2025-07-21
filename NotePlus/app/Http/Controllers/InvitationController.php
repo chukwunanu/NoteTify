@@ -23,6 +23,9 @@ class InvitationController extends Controller
             'user_id' => 'required|exists:users,id'
         ]);
 
+        if(!$request->email){
+            return redirect()->route('teams.show', $team->id)->with('fail', 'Email is required to send an invitation!');
+        }
         $token = Str::random(40);
 
         Invite::create([

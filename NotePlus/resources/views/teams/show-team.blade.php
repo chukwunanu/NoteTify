@@ -138,6 +138,9 @@
           <input type="hidden" name="team_id" value="{{ $team->id }}">
             <input class="py-3 border-none rounded-md pr-3" type="email" name="email" placeholder="Enter email address"/>
           <button type="submit" class="rounded-md font-bold text-2xl px-3 py-2 border bg-blue-600 text-white hover:bg-gray-200 hover:text-black">Invite</button>
+          @error('email')
+             <p class="text-xs text-red-500 font-semibold mt-2">{{ $message }}</p>
+          @enderror
         </form>
         
     </div>
@@ -225,6 +228,7 @@
         <thead class="bg-gray-100">
             <tr>
                 <th class="py-3 px-4 text-left">Name</th>
+                <th class="py-3 px-4 text-left">Profession</th>
                 <th class="py-3 px-4 text-left">Email</th>
                 <th class="py-3 px-4 text-left">Role</th>
                 <th class="py-3 px-4 text-left">Joined</th>
@@ -235,6 +239,7 @@
             @forelse ($team->users as $user)
                 <tr class="border-t hover:bg-gray-50">
                     <td class="py-2 px-4">{{ $user->name }}</td>
+                    <td class="py-2 px-4">{{ $user->profession }}</td>
                     <td class="py-2 px-4">{{ $user->email }}</td>
                     <td class="py-2 px-4">{{ ucfirst($user->pivot->role) }}</td>
                     <td class="py-2 px-4">{{ $user->pivot->created_at ? $user->pivot->created_at->format('M d, Y') : '—' }}</td>

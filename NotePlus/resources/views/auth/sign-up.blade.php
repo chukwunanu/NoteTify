@@ -67,9 +67,19 @@
               </div>
 
               <div>
+                <label for="profession" class="block text-sm/6 font-medium text-gray-900">Profession</label>
+                <div class="mt-2">
+                  <input type="text" name="profession" id="profession" placeholder="PHP Developer" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                </div>
+                @error('profession')
+                   <p class="text-xs text-red-500 font-semibold mt-2">{{ $message }}</p>
+                @enderror
+              </div>
+
+              <div>
                 <label for="email" class="block text-sm/6 font-medium text-gray-900">Email address</label>
                 <div class="mt-2">
-                  <input type="email" name="email" id="email" autocomplete="email" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
+                  <input type="email" name="email" id="email" required class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
                 </div>
                 @error('email')
                    <p class="text-xs text-red-500 font-semibold mt-2">{{ $message }}</p>
