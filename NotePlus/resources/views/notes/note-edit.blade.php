@@ -6,8 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="{{ asset('public/build/assets/app-CQW-ZJaW.css ') }}">
     <script src="{{ asset('public/build/assets/app-DNxiirP_.js') }}" type="module"></script>
-    {{-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script> --}}
+       {{-- <!-- Quill CSS -->
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <!-- Quill JS -->
+    <script src="https://cdn.quilljs.com/1.3.7/quill.js"></script> --}}
      @vite(['resources/css/app.css', 'resources/js/app.js'])
     <title>Edit Note Page</title>
 </head>
@@ -160,6 +162,7 @@
                         
                           <div class="col-span-full mt-2">
                               <input type="text" id="title" name="title" class="block w-full rounded-md bg-white mb-1 px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" value="{{ $note->title }}" required>
+                              {{-- <div id="editor" style="height: 250px;"></div> --}}
                               <textarea name="content" id="content" rows="3" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">{{ $note->content }}</textarea>
                             </div>
                           </div>
@@ -172,6 +175,30 @@
                     </div>
                 </div>
             </form>
+            {{-- <script>
+              var quill = new Quill('#editor', {
+                theme: 'snow',
+                modules: {
+                  toolbar: [
+                    ['bold', 'italic', 'underline'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    [{ indent: '-1'}, { indent: '+1' }]
+                  ]
+                }
+              });
+            
+              // Sync Quill content to textarea before submit
+              document.querySelector('form').addEventListener('submit', function () {
+                document.querySelector('#content').value = quill.root.innerHTML;
+              });
+              // Load the saved note HTML into Quill
+              quill.root.innerHTML = `{!! $note->content !!}`;
+
+              document.querySelector('form').addEventListener('submit', function () {
+                document.querySelector('#content').value = quill.root.innerHTML;
+              });
+
+            </script> --}}
         
         </div>
     </div>

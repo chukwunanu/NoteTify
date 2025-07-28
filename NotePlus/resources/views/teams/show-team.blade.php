@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    {{-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script> --}}
+       {{-- <!-- Quill CSS -->
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+    <!-- Quill JS -->
+    <script src="https://cdn.quilljs.com/1.3.7/quill.js"></script> --}}
      @vite(['resources/css/app.css', 'resources/js/app.js'])
     <title>Show Team Details Page</title>
 </head>
@@ -139,7 +141,7 @@
             <input class="py-3 border-none rounded-md pr-3" type="email" name="email" placeholder="Enter email address"/>
           <button type="submit" class="rounded-md font-bold text-2xl px-3 py-2 border bg-blue-600 text-white hover:bg-gray-200 hover:text-black">Invite</button>
           @error('email')
-             <p class="text-xs text-red-500 font-semibold mt-2">{{ $message }}</p>
+             <p class="text-xs text-red-500 font-semibold">{{ $message }}</p>
           @enderror
         </form>
         
@@ -181,7 +183,8 @@
                         
                           <div class="col-span-full mt-2">
                               <input type="text" id="title" name="title" placeholder="Title of your note" class="block w-full rounded-md bg-white mb-1 px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 placeholder:font-bold focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" required>
-                              <textarea name="content" id="content" rows="3" placeholder="Write your notes here..." class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
+                              {{-- <div id="editor" style="height: 250px;"></div> --}}
+                              <textarea name="content" id="content" placeholder="Write your note here..." rows="3" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"></textarea>
                             </div>
                           </div>
                     </div>
@@ -190,6 +193,31 @@
                     </div>
                 </div>
             </form>
+
+            {{-- <script>
+              document.addEventListener('DOMContentLoaded', function () {
+                const form = document.querySelector('form');
+                const hiddenContent = document.querySelector('#content');
+              
+                if (form && hiddenContent) {
+                  const quill = new Quill('#editor', {
+                    theme: 'snow',
+                    placeholder: 'Write your notes here...',
+                    modules: {
+                      toolbar: [
+                        ['bold', 'italic', 'underline'],
+                        [{ list: 'ordered' }, { list: 'bullet' }],
+                        [{ indent: '-1' }, { indent: '+1' }]
+                      ]
+                    }
+                  });
+                
+                  form.addEventListener('submit', function () {
+                    hiddenContent.value = quill.root.innerHTML;
+                  });
+                }
+              });
+            </script> --}}
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
         @foreach ($notes as $note)

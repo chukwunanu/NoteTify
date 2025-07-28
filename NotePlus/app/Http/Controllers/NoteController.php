@@ -6,6 +6,7 @@ use App\Models\Note;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Mews\Purifier\Facades\Purifier;
 use Illuminate\Support\Facades\Auth;
 
 class NoteController extends Controller
@@ -14,20 +15,20 @@ class NoteController extends Controller
      * Display a listing of the resource.
      */
    public function index()
-{
-    $team = Auth::user()->teams->first();
+    {
+        $team = Auth::user()->teams->first();
 
-    // Check if the user is in a team
-    if (!$team) {
-        return redirect()->route('teams.create')->with('fail', 'Please join or create a team first.');
+        // Check if the user is in a team
+        if (!$team) {
+            return redirect()->route('teams.create')->with('fail', 'Please join or create a team first.');
+        }
+
+        $notes = Note::where('team_id', $team->id)
+                     ->where('user_id', Auth::id()) // Optional: limit to current user’s notes
+                     ->get();
+
+        return view('notes.projects', compact('notes', 'team'));
     }
-
-    $notes = Note::where('team_id', $team->id)
-                 ->where('user_id', Auth::id()) // Optional: limit to current user’s notes
-                 ->get();
-
-    return view('notes.projects', compact('notes', 'team'));
-}
 
     public function create()
     {
@@ -37,14 +38,14 @@ class NoteController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-   public function store(Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|min:3',
-            'content' => 'required|string|min:5',
+            'title' => 'required|min:3',
+            'content' => 'required|min:5',
             'team_id' => 'required|exists:teams,id',
         ]);
-    
+        
         $user = Auth::user();
     
         if (!$user) {
@@ -59,7 +60,6 @@ class NoteController extends Controller
             return redirect()->back()->with('fail', 'This note cannot be empty. Minimum of five characters required');
         }
 
-    
         $note = Note::create([
             'title' => $validated['title'],
             'content' => $validated['content'],
@@ -70,7 +70,6 @@ class NoteController extends Controller
     
         return redirect()->route('teams.show', $validated['team_id'])->with('success', 'Note created successfully.');
     }
-
 
     /**
      * Display the specified resource.

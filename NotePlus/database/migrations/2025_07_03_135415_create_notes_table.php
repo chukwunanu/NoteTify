@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('notes', function (Blueprint $table) {
             $table->id();
-             $table->string('title');
-            $table->string('content');
+            $table->text('title');
+            $table->longText('content');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('team_id')->constrained('teams')->onDelete('cascade');
             $table->string('created_by')->nullable(); // Store the name of the user who created the note
